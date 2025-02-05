@@ -1,7 +1,7 @@
 GOMOBILE=gomobile
 GOBIND=$(GOMOBILE) bind
 BUILDDIR=$(shell pwd)/build
-IOS_ARTIFACT=$(BUILDDIR)/XRay.xcframework
+IOS_ARTIFACT=$(BUILDDIR)/XPN.xcframework
 ANDROID_ARTIFACT=$(BUILDDIR)/xray.aar
 IOS_TARGET=ios
 IOS_VERSION=12.0

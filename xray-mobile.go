@@ -1,4 +1,4 @@
-package XRay
+package XPN
 
 import (
 	"bytes"
@@ -29,7 +29,7 @@ func SetMemLimit() {
 	debug.SetMemoryLimit(30 * 1024 * 1024)
 }
 
-func RayStart(config []byte, myLogger MyLogger) error {
+func LetsStart(config []byte, myLogger MyLogger) error {
 	conf, err := serial.DecodeJSONConfig(bytes.NewReader(config))
 	if err != nil {
 		myLogger.LogData("Config load error: " + err.Error())
@@ -41,31 +41,31 @@ func RayStart(config []byte, myLogger MyLogger) error {
 	}
 	instance, err := core.New(pbConfig)
 	if err != nil {
-		myLogger.LogData("Create XRay error: " + err.Error())
+		myLogger.LogData("Create XPN error: " + err.Error())
 		return err
 	}
 	err = instance.Start()
 	if err != nil {
-		myLogger.LogData("Start XRay error: " + err.Error())
+		myLogger.LogData("Start XPN error: " + err.Error())
 	}
 	cInstance = instance
 	return nil
 }
 
-func RayStop() {
+func LetsStop() {
 	cInstance.Close()
 }
 
-func RayGetVersion() string {
+func LetsGetVersion() string {
 	return core.Version()
 }
 
-func RayMeasureDelay(url string) (int64, error) {
-	delay, err := rayMeasureInstDelay(context.Background(), cInstance, url)
+func LetsMeasureDelay(url string) (int64, error) {
+	delay, err := letsMeasureInstDelay(context.Background(), cInstance, url)
 	return delay, err
 }
 
-func RayMeasureOutboundDelay(ConfigureFileContent string, url string) (int64, error) {
+func LetsMeasureOutboundDelay(ConfigureFileContent string, url string) (int64, error) {
 	config, err := serial.LoadJSONConfig(strings.NewReader(ConfigureFileContent))
 	if err != nil {
 		return -1, err
@@ -83,12 +83,12 @@ func RayMeasureOutboundDelay(ConfigureFileContent string, url string) (int64, er
 	}
 
 	inst.Start()
-	delay, err := rayMeasureInstDelay(context.Background(), inst, url)
+	delay, err := letsMeasureInstDelay(context.Background(), inst, url)
 	inst.Close()
 	return delay, err
 }
 
-func rayMeasureInstDelay(ctx context.Context, inst *core.Instance, url string) (int64, error) {
+func letsMeasureInstDelay(ctx context.Context, inst *core.Instance, url string) (int64, error) {
 	if inst == nil {
 		return -1, errors.New("core instance nil")
 	}
