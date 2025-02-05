@@ -18,21 +18,21 @@ import (
 	"github.com/xtls/xray-core/infra/conf/serial"
 )
 
-type Logger interface {
-	LogInput(s string)
+type MyLogger interface {
+	LogData(s string)
 }
 
-var coreInstance *core.Instance
+var cInstance *core.Instance
 
-func SetMemoryLimit() {
+func SetMemLimit() {
 	debug.SetGCPercent(10)
 	debug.SetMemoryLimit(30 * 1024 * 1024)
 }
 
-func Start(config []byte, logger Logger) error {
+func RayStart(config []byte, myLogger MyLogger) error {
 	conf, err := serial.DecodeJSONConfig(bytes.NewReader(config))
 	if err != nil {
-		logger.LogInput("Config load error: " + err.Error())
+		myLogger.LogData("Config load error: " + err.Error())
 		return err
 	}
 	pbConfig, err := conf.Build()
@@ -41,31 +41,31 @@ func Start(config []byte, logger Logger) error {
 	}
 	instance, err := core.New(pbConfig)
 	if err != nil {
-		logger.LogInput("Create XRay error: " + err.Error())
+		myLogger.LogData("Create XRay error: " + err.Error())
 		return err
 	}
 	err = instance.Start()
 	if err != nil {
-		logger.LogInput("Start XRay error: " + err.Error())
+		myLogger.LogData("Start XRay error: " + err.Error())
 	}
-	coreInstance = instance
+	cInstance = instance
 	return nil
 }
 
-func Stop() {
-	coreInstance.Close()
+func RayStop() {
+	cInstance.Close()
 }
 
-func GetVersion() string {
+func RayGetVersion() string {
 	return core.Version()
 }
 
-func MeasureDelay(url string) (int64, error) {
-	delay, err := measureInstDelay(context.Background(), coreInstance, url)
+func RayMeasureDelay(url string) (int64, error) {
+	delay, err := rayMeasureInstDelay(context.Background(), cInstance, url)
 	return delay, err
 }
 
-func MeasureOutboundDelay(ConfigureFileContent string, url string) (int64, error) {
+func RayMeasureOutboundDelay(ConfigureFileContent string, url string) (int64, error) {
 	config, err := serial.LoadJSONConfig(strings.NewReader(ConfigureFileContent))
 	if err != nil {
 		return -1, err
@@ -83,12 +83,12 @@ func MeasureOutboundDelay(ConfigureFileContent string, url string) (int64, error
 	}
 
 	inst.Start()
-	delay, err := measureInstDelay(context.Background(), inst, url)
+	delay, err := rayMeasureInstDelay(context.Background(), inst, url)
 	inst.Close()
 	return delay, err
 }
 
-func measureInstDelay(ctx context.Context, inst *core.Instance, url string) (int64, error) {
+func rayMeasureInstDelay(ctx context.Context, inst *core.Instance, url string) (int64, error) {
 	if inst == nil {
 		return -1, errors.New("core instance nil")
 	}
