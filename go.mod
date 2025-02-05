@@ -1,4 +1,4 @@
-module github.com/EbrahimTahernejad/xray-mobile
+module github.com/ibra-bybuy/xray-mobile
 
 go 1.22.4
 
