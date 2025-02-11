@@ -4,7 +4,7 @@ BUILDDIR=$(shell pwd)/build
 IOS_ARTIFACT=$(BUILDDIR)/XPN.xcframework
 ANDROID_ARTIFACT=$(BUILDDIR)/xray.aar
 IOS_TARGET=ios
-IOS_VERSION=12.0
+IOS_VERSION=15.6
 MACOS_TARGET=macos
 ANDROID_TARGET=android
 # LDFLAGS='-s -w -X google.golang.org/protobuf/reflect/protoregistry.conflictPolicy=warn'

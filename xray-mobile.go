@@ -24,9 +24,17 @@ type MyLogger interface {
 
 var cInstance *core.Instance
 
+func LetsPrepareToSetMimLimit(config []byte, myLogger MyLogger) {
+	myLogger.LogData("Preparing to set mem limit")
+}
+
 func SetMemLimit() {
 	debug.SetGCPercent(10)
 	debug.SetMemoryLimit(30 * 1024 * 1024)
+}
+
+func LetsPrepareToStart(config []byte, myLogger MyLogger) {
+	myLogger.LogData("Preparing to start")
 }
 
 func LetsStart(config []byte, myLogger MyLogger) error {
@@ -52,12 +60,24 @@ func LetsStart(config []byte, myLogger MyLogger) error {
 	return nil
 }
 
+func LetsPrepareToStop(myLogger MyLogger) {
+	myLogger.LogData("Preparing to stop")
+}
+
 func LetsStop() {
 	cInstance.Close()
 }
 
+func LetsPrepareToGetVersion(myLogger MyLogger) {
+	myLogger.LogData("Preparing to get version")
+}
+
 func LetsGetVersion() string {
 	return core.Version()
+}
+
+func LetsPrepareToMeasureDelay(myLogger MyLogger) {
+	myLogger.LogData("Preparing to get measure delay")
 }
 
 func LetsMeasureDelay(url string) (int64, error) {
